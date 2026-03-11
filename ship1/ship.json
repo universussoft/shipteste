@@ -1,0 +1,95 @@
+{
+  "id": "ship1",
+  "name": "Lusitânia II",
+  "subtitle": "Graneleiro de Carga Mista",
+  "description": "O Lusitânia II representa o pináculo da engenharia naval portuguesa, concebido para operar em rotas atlânticas de longo curso com eficiência e segurança máximas. Com casco optimizado por dinâmica computacional de fluidos, integra sistemas de propulsão híbrida e gestão inteligente de lastro.",
+  "status": "Em Serviço · Atlântico Norte",
+  "flag": "PT",
+  "imo": "9876543",
+  "specs": {
+    "Comprimento": "189.4 m",
+    "Boca": "28.6 m",
+    "Tonelagem": "28 400 DWT",
+    "Calado": "9.8 m",
+    "Velocidade": "16.2 nós",
+    "Autonomia": "14 200 nm",
+    "Propulsão": "2× MAN B&W",
+    "Construção": "2019 · Lisboa"
+  },
+  "model": {
+    "obj": "Ship_N110220.obj",
+    "mtl": "Ship_N110220.mtl",
+    "scale": 1,
+    "rotationOffset": 0,
+    "cameraRadius": 210,
+    "cameraTarget": [0, 22, 0],
+    "cameraPitch": 0.28
+  },
+  "hotspots": [
+    {
+      "id": "proa",
+      "name": "Proa Bulbosa",
+      "icon": "⚓",
+      "position": { "x": 0, "y": 6, "z": 75 },
+      "color": "#00d4ff",
+      "description": "A proa bulbosa reduz a resistência hidrodinâmica até 15%, melhorando a eficiência de combustível em mar alto e condições adversas.",
+      "details": [
+        { "label": "Redução de resistência", "value": "até 15%" },
+        { "label": "Material", "value": "Aço de alta resistência AH36" },
+        { "label": "Comprimento submerso", "value": "4.2 m" }
+      ]
+    },
+    {
+      "id": "conves",
+      "name": "Convés de Carga",
+      "icon": "📦",
+      "position": { "x": 0, "y": 37, "z": 15 },
+      "color": "#00d4ff",
+      "description": "Convés principal com capacidade para 120 TEU, sistema de grua dupla e tanques de lastro integrados para estabilidade.",
+      "details": [
+        { "label": "Capacidade", "value": "120 TEU" },
+        { "label": "Gruas", "value": "2× 35 ton SWL" },
+        { "label": "Área útil", "value": "2 400 m²" }
+      ]
+    },
+    {
+      "id": "porao",
+      "name": "Porão Principal",
+      "icon": "🏗️",
+      "position": { "x": 10, "y": 18, "z": 0 },
+      "color": "#00d4ff",
+      "description": "Porão de carga refrigerada com temperatura controlada entre -25°C e +12°C, capacidade total de 3 800 m³.",
+      "details": [
+        { "label": "Capacidade", "value": "3 800 m³" },
+        { "label": "Temperatura", "value": "-25°C a +12°C" },
+        { "label": "Divisórias", "value": "4 compartimentos" }
+      ]
+    },
+    {
+      "id": "ponte",
+      "name": "Ponte de Comando",
+      "icon": "🧭",
+      "position": { "x": 0, "y": 43, "z": -35 },
+      "color": "#00d4ff",
+      "description": "Equipada com ECDIS duplo, radar de banda X/S e sistema de posicionamento dinâmico classe DP2.",
+      "details": [
+        { "label": "Sistema nav.", "value": "ECDIS duplo redundante" },
+        { "label": "Posicionamento", "value": "DP2 classe" },
+        { "label": "Radar", "value": "X-band + S-band" }
+      ]
+    },
+    {
+      "id": "maquinas",
+      "name": "Casa das Máquinas",
+      "icon": "⚙️",
+      "position": { "x": 0, "y": 10, "z": -58 },
+      "color": "#00d4ff",
+      "description": "Dois motores MAN B&W de 12 400 kW cada, sistema de recuperação de calor residual e scrubber SOx integrado.",
+      "details": [
+        { "label": "Potência total", "value": "24 800 kW" },
+        { "label": "Motores", "value": "2× MAN B&W 7S60ME" },
+        { "label": "Emissões", "value": "SOx scrubber EGCS" }
+      ]
+    }
+  ]
+}

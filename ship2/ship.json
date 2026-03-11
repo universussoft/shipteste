@@ -1,0 +1,95 @@
+{
+  "id": "ship3",
+  "name": "Tejo Carrier",
+  "subtitle": "Porta-Contentores Oceânico",
+  "description": "O Tejo Carrier é o maior activo da frota OceanVast, concebido para rotas transatlânticas de alta capacidade. Com um design de proa recto e popa de transom, maximiza o espaço de convés e a estabilidade em mar aberto, operando nas principais rotas entre Europa, Américas e África.",
+  "status": "Em Serviço · Transatlântico",
+  "flag": "PT",
+  "imo": "9512043",
+  "specs": {
+    "Comprimento": "302.0 m",
+    "Boca": "43.2 m",
+    "Tonelagem": "85 000 DWT",
+    "Calado": "14.5 m",
+    "Velocidade": "22.4 nós",
+    "Autonomia": "22 000 nm",
+    "Propulsão": "2× Wärtsilä RT-flex96C",
+    "Construção": "2022 · Viana do Castelo"
+  },
+  "model": {
+    "obj": "carrier.obj",
+    "mtl": "carrier.mtl",
+    "scale": 1,
+    "rotationOffset": 0,
+    "cameraRadius": 380,
+    "cameraTarget": [0, 18, -20],
+    "cameraPitch": 0.25
+  },
+  "hotspots": [
+    {
+      "id": "proa_recta",
+      "name": "Proa Recta",
+      "icon": "⚓",
+      "position": { "x": 0, "y": 15, "z": 115 },
+      "color": "#00d4ff",
+      "description": "Proa de tipo recto (verticalmente orientado) que maximiza o comprimento de convés útil e melhora o comportamento em ondas longas oceânicas.",
+      "details": [
+        { "label": "Tipo", "value": "Proa recta (Axe bow)" },
+        { "label": "Reforço", "value": "Classe Ice 1C" },
+        { "label": "Linha d'água", "value": "Optimizada CFD" }
+      ]
+    },
+    {
+      "id": "convés_principal",
+      "name": "Convés de Contentores",
+      "icon": "📦",
+      "position": { "x": 0, "y": 35, "z": 20 },
+      "color": "#00d4ff",
+      "description": "Convés principal com capacidade para 1 200 TEU em deck, com sistema de guias de célula e travamento automático de contentores.",
+      "details": [
+        { "label": "Capacidade total", "value": "4 500 TEU" },
+        { "label": "Em deck", "value": "1 200 TEU" },
+        { "label": "Reefer plugs", "value": "400 tomadas" }
+      ]
+    },
+    {
+      "id": "torre_controlo",
+      "name": "Torre de Controlo",
+      "icon": "🧭",
+      "position": { "x": 5, "y": 50, "z": -25 },
+      "color": "#00d4ff",
+      "description": "Torre de navegação de 7 andares com ponte integrada, centro de controlo de carga, sala de máquinas remotas e centro de comunicações GMDSS.",
+      "details": [
+        { "label": "Andares", "value": "7 pisos" },
+        { "label": "Alcance radar", "value": "96 nm X-band" },
+        { "label": "Sistema", "value": "INS integrado classe A" }
+      ]
+    },
+    {
+      "id": "maquinas",
+      "name": "Casa das Máquinas",
+      "icon": "⚙️",
+      "position": { "x": 0, "y": 8, "z": -100 },
+      "color": "#00d4ff",
+      "description": "Sala de máquinas com dois motores de dois tempos Wärtsilä RT-flex96C de 57 200 kW cada, os maiores motores diesel do mundo.",
+      "details": [
+        { "label": "Potência total", "value": "114 400 kW" },
+        { "label": "Motores", "value": "2× Wärtsilä RT-flex96C" },
+        { "label": "Consumo design", "value": "270 g/kWh" }
+      ]
+    },
+    {
+      "id": "popa",
+      "name": "Sistema de Popa",
+      "icon": "🔧",
+      "position": { "x": 0, "y": 12, "z": -145 },
+      "color": "#00d4ff",
+      "description": "Popa de transom com dois hélices de passo variável de 9.6m de diâmetro, dois lemes de alta eficiência tipo Becker e dois bow thrusters de 3 000 kW.",
+      "details": [
+        { "label": "Hélices", "value": "2× CPP, Ø 9.6m" },
+        { "label": "Bow thrusters", "value": "2× 3 000 kW" },
+        { "label": "Lemes", "value": "2× Becker flap" }
+      ]
+    }
+  ]
+}

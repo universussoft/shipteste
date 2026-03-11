@@ -1,0 +1,158 @@
+# 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
+# File Created: 11.02.2020 08:58:52
+
+newmtl white_st
+	Ns 70.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.9804 0.9412 0.9529
+	Ks 0.6300 0.6300 0.6300
+	Ke 0.0000 0.0000 0.0000
+	map_Ka 4_whites.jpg
+	map_Kd 4_whites.jpg
+
+newmtl _Shipmat_SKP_2_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka black.jpg
+	map_Kd black.jpg
+
+newmtl _Shipmat_SKP_3_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grey.jpg
+	map_Kd grey.jpg
+
+newmtl _Shipmat_SKP_4_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka dark gre.jpg
+	map_Kd dark gre.jpg
+
+newmtl _Shipmat_SKP_5_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.6000 0.6000 0.6000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka grey lig.jpg
+	map_Kd grey lig.jpg
+
+newmtl _Shipmat_SKP_6_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka blue lgh.jpg
+	map_Kd blue lgh.jpg
+
+newmtl _Shipmat_SKP_7_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.7843 0.4157 0.3020
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka red colr.jpg
+	map_Kd red colr.jpg
+
+newmtl _Shipmat_SKP_1_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.6706 0.3216 0.4588
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka bordo.jpg
+	map_Kd bordo.jpg
+
+newmtl _Shipmat_SKP_10_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5137 0.5059 0.4667
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka antrazit.jpg
+	map_Kd antrazit.jpg
+
+newmtl _Shipmat_SKP_11_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.9020 0.8275 0.5961
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka limon.jpg
+	map_Kd limon.jpg
+
+newmtl _Shipmat_SKP_9_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.3961 0.4196 0.7490
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka blue drk.jpg
+	map_Kd blue drk.jpg
+
+newmtl _Shipmat_SKP_8_5db35dce
+	Ns 0.0000
+	Ni 1.5000
+	d 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.2902 0.8314 0.5451
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka green dk.jpg
+	map_Kd green dk.jpg

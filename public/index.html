@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OceanVast — Frota Naval</title>
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:    #06090f;
+  --deep:   #03060c;
+  --accent: #00d4ff;
+  --gold:   #c8a96e;
+  --silver: #7a9ab8;
+  --white:  #eef3f8;
+  --border: rgba(0,212,255,.12);
+  --slide-dur: 20s;
+}
+
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--deep); }
+
+/* ── TOP NAV ──────────────────────────────────────────────────── */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 36px;
+  background: linear-gradient(to bottom, rgba(3,6,12,.98), rgba(3,6,12,.0));
+  border-bottom: 1px solid rgba(0,212,255,.08);
+}
+.logo {
+  font-family: 'Bebas Neue'; font-size: 1.7rem; letter-spacing: .18em;
+  color: var(--accent); text-shadow: 0 0 24px rgba(0,212,255,.4);
+}
+.nav-links { display: flex; gap: 24px; }
+.nav-links a {
+  font-family: 'Barlow Condensed'; font-size: .75rem; letter-spacing: .18em;
+  color: rgba(122,154,184,.6); text-decoration: none; transition: color .2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+.nav-right {
+  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .14em;
+  color: rgba(122,154,184,.35);
+}
+
+/* ── STAGE (fills viewport below nav) ────────────────────────── */
+#stage {
+  position: fixed; inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  grid-template-rows: 56px 1fr 72px;
+  grid-template-areas:
+    "nav  nav"
+    "view info"
+    "ctrl ctrl";
+}
+
+/* ── THREE.JS CANVAS ─────────────────────────────────────────── */
+#view { grid-area: view; position: relative; overflow: hidden; }
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* Loading overlay */
+#load-overlay {
+  position: absolute; inset: 0; z-index: 4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  background: var(--deep);
+  transition: opacity .6s ease;
+}
+#load-overlay.fade { opacity: 0; pointer-events: none; }
+.load-ship-name {
+  font-family: 'Bebas Neue'; font-size: 3rem; letter-spacing: .12em;
+  color: var(--accent); opacity: .3;
+}
+.load-bar { width: 160px; height: 1px; background: rgba(255,255,255,.08); overflow: hidden; }
+.load-fill { height: 100%; background: var(--accent); width: 0%; transition: width .25s; }
+.load-pct {
+  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .14em;
+  color: rgba(122,154,184,.4);
+}
+
+/* Slide transition veil */
+#veil {
+  position: absolute; inset: 0; z-index: 3;
+  background: var(--deep);
+  opacity: 0; pointer-events: none;
+  transition: opacity .5s ease;
+}
+#veil.show { opacity: 1; }
+
+/* Ship name watermark on canvas */
+#canvas-label {
+  position: absolute; bottom: 24px; left: 28px; z-index: 2;
+  pointer-events: none;
+}
+.canvas-ship-name {
+  font-family: 'Bebas Neue'; font-size: 4.5rem; letter-spacing: .08em;
+  color: rgba(255,255,255,.06); line-height: 1;
+  transition: opacity .6s ease;
+}
+.canvas-ship-num {
+  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .25em;
+  color: rgba(0,212,255,.25); margin-bottom: 4px;
+}
+
+/* ── INFO PANEL ──────────────────────────────────────────────── */
+#info {
+  grid-area: info;
+  background: rgba(4,7,14,.82);
+  border-left: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Inner panel content that slides/fades on change */
+#info-inner {
+  flex: 1; display: flex; flex-direction: column;
+  padding: 28px 24px 20px;
+  overflow: hidden;
+  transition: opacity .4s ease, transform .4s ease;
+}
+#info-inner.exit  { opacity: 0; transform: translateY(12px); }
+#info-inner.enter { opacity: 0; transform: translateY(-8px); }
+
+.info-index {
+  font-family: 'Barlow Condensed'; font-size: .65rem; letter-spacing: .28em;
+  color: rgba(0,212,255,.45); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.info-index-line { flex: 1; height: 1px; background: var(--border); }
+
+.info-name {
+  font-family: 'Bebas Neue'; font-size: 2.6rem; letter-spacing: .07em;
+  color: var(--white); line-height: 1; margin-bottom: 4px;
+}
+.info-sub {
+  font-family: 'Barlow Condensed'; font-size: .82rem; letter-spacing: .14em;
+  color: var(--accent); font-weight: 300; margin-bottom: 16px;
+}
+
+.divider { height: 1px; background: var(--border); margin-bottom: 14px; }
+
+.info-desc {
+  font-family: 'Barlow'; font-weight: 300; font-size: .82rem;
+  line-height: 1.72; color: rgba(165,190,210,.7);
+  margin-bottom: 16px;
+  /* clamp to ~3 lines */
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.specs-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: rgba(0,212,255,.06); margin-bottom: 14px; flex-shrink: 0;
+}
+.spec-cell { padding: 9px 11px; background: rgba(4,8,16,.9); }
+.spec-k {
+  font-family: 'Barlow Condensed'; font-size: .6rem; letter-spacing: .2em;
+  color: var(--silver); margin-bottom: 2px; opacity: .7;
+}
+.spec-v {
+  font-family: 'Barlow Condensed'; font-size: .9rem; font-weight: 600;
+  color: var(--white); letter-spacing: .04em;
+}
+
+.status-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-shrink: 0;
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #2aff8f;
+  animation: blink 2.5s infinite; flex-shrink: 0;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+.status-txt {
+  font-family: 'Barlow Condensed'; font-size: .72rem; letter-spacing: .14em;
+  color: rgba(42,255,143,.7);
+}
+
+.cta-explore {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border: 1px solid rgba(0,212,255,.3);
+  color: var(--accent); text-decoration: none; cursor: pointer;
+  font-family: 'Barlow Condensed'; font-size: .78rem; letter-spacing: .18em;
+  background: none; transition: .2s; margin-top: auto; flex-shrink: 0;
+}
+.cta-explore:hover { background: rgba(0,212,255,.07); border-color: var(--accent); }
+.cta-arrow { font-size: 1rem; transition: transform .2s; }
+.cta-explore:hover .cta-arrow { transform: translateX(4px); }
+
+/* ── BOTTOM CONTROLS ─────────────────────────────────────────── */
+#ctrl {
+  grid-area: ctrl;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  background: rgba(3,6,12,.97);
+  border-top: 1px solid rgba(0,212,255,.08);
+}
+
+/* Ship dots nav */
+.ship-dots { display: flex; align-items: center; gap: 10px; }
+.ship-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid rgba(0,212,255,.25);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .05em;
+  color: rgba(122,154,184,.5); transition: .2s;
+}
+.ship-dot:hover { border-color: var(--accent); color: var(--accent); }
+.ship-dot.active {
+  border-color: var(--accent); background: rgba(0,212,255,.12);
+  color: var(--accent);
+}
+
+/* Progress timer bar */
+.timer-wrap { flex: 1; display: flex; align-items: center; gap: 12px; padding: 0 28px; }
+.timer-label {
+  font-family: 'Barlow Condensed'; font-size: .65rem; letter-spacing: .18em;
+  color: rgba(122,154,184,.35); flex-shrink: 0;
+}
+.timer-track {
+  flex: 1; height: 1px; background: rgba(0,212,255,.12); position: relative;
+}
+.timer-fill {
+  position: absolute; top: 0; left: 0; height: 100%; background: var(--accent);
+  width: 0%;
+  /* JS drives this via a CSS animation restart trick */
+}
+.timer-fill.running {
+  animation: timer-run var(--slide-dur) linear forwards;
+}
+@keyframes timer-run { from { width:0% } to { width:100% } }
+
+/* Play/pause */
+.play-btn {
+  background: none; border: 1px solid rgba(0,212,255,.2);
+  color: rgba(122,154,184,.6); padding: 6px 14px;
+  font-family: 'Barlow Condensed'; font-size: .72rem; letter-spacing: .14em;
+  cursor: pointer; transition: .2s;
+}
+.play-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.ctrl-right {
+  font-family: 'Barlow Condensed'; font-size: .66rem; letter-spacing: .12em;
+  color: rgba(122,154,184,.3);
+}
+
+/* ── SLIDE COUNTER ───────────────────────────────────────────── */
+#slide-counter {
+  position: absolute; top: 70px; right: 436px; z-index: 5;
+  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .2em;
+  color: rgba(0,212,255,.3); text-align: right;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <!-- nav placeholder (actual nav is fixed) -->
+  <div style="grid-area:nav"></div>
+
+  <div id="view">
+    <canvas id="canvas"></canvas>
+
+    <div id="load-overlay">
+      <div class="load-ship-name" id="load-name">—</div>
+      <div class="load-bar"><div class="load-fill" id="load-fill"></div></div>
+      <div class="load-pct" id="load-pct">0%</div>
+    </div>
+
+    <div id="veil"></div>
+
+    <div id="canvas-label">
+      <div class="canvas-ship-num" id="canvas-num">NAVIO 01</div>
+      <div class="canvas-ship-name" id="canvas-name">—</div>
+    </div>
+  </div>
+
+  <div id="info">
+    <div id="info-inner">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <div id="ctrl">
+    <div class="ship-dots" id="ship-dots"></div>
+
+    <div class="timer-wrap">
+      <span class="timer-label">PRÓXIMO</span>
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+    </div>
+
+    <button class="play-btn" id="play-btn" onclick="togglePlay()">⏸ PAUSA</button>
+    <div class="ctrl-right" id="ctrl-right">FROTA · 3 NAVIOS</div>
+  </div>
+</div>
+
+<div id="slide-counter" id="slide-counter"></div>
+
+<!-- FIXED NAV on top of everything -->
+<div id="nav">
+  <div class="logo">OceanVast</div>
+  <div class="nav-links">
+    <a href="#" class="active">FROTA</a>
+    <a href="#">ROTAS</a>
+    <a href="#">OPERAÇÕES</a>
+    <a href="#">CONTACTO</a>
+  </div>
+  <div class="nav-right">NAVEGAÇÃO AVANÇADA · DESDE 1987</div>
+</div>
+
+<script type="module">
+import * as THREE from './three.module.js';
+import { OBJLoader } from './OBJLoader.module.js';
+import { MTLLoader } from './MTLLoader.module.js';
+
+// ── PERSISTENT RENDERER ───────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.25;
+renderer.setClearColor(0x03060c);
+
+// ── SCENE ─────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x03060c, 0.003);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 3000);
+
+// Lights (persistent)
+const ambLight = new THREE.AmbientLight(0x304060, 2);
+scene.add(ambLight);
+
+const sunLight = new THREE.DirectionalLight(0xfff4d6, 3.2);
+sunLight.position.set(80, 120, 60);
+sunLight.castShadow = true;
+sunLight.shadow.mapSize.set(1024, 1024);
+sunLight.shadow.camera.left = sunLight.shadow.camera.bottom = -180;
+sunLight.shadow.camera.right = sunLight.shadow.camera.top = 180;
+scene.add(sunLight);
+
+const fillLight = new THREE.DirectionalLight(0x2060a0, 1.0);
+fillLight.position.set(-80, 30, -60);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0x00d4ff, 0.4);
+rimLight.position.set(0, -20, -120);
+scene.add(rimLight);
+
+// Water
+const waterGeo = new THREE.PlaneGeometry(900, 900, 32, 32);
+const waterMat = new THREE.MeshStandardMaterial({
+  color: 0x053050, roughness: 0.25, metalness: 0.45,
+  transparent: true, opacity: 0.88
+});
+const water = new THREE.Mesh(waterGeo, waterMat);
+water.rotation.x = -Math.PI / 2;
+scene.add(water);
+
+// Ship group (cleared per ship)
+const shipGroup = new THREE.Group();
+scene.add(shipGroup);
+
+// ── RESIZE ────────────────────────────────────────────────────────
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w || !h) return;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+}
+window.addEventListener('resize', resize);
+
+// ── RENDER LOOP ───────────────────────────────────────────────────
+let wt = 0;
+(function loop() {
+  requestAnimationFrame(loop);
+  wt += 0.0008;
+  // Animate water
+  const pos = waterGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    pos.setY(i,
+      Math.sin(pos.getX(i) * 0.042 + wt * 2.2) * 0.5 +
+      Math.sin(pos.getZ(i) * 0.058 + wt * 1.6) * 0.32
+    );
+  }
+  pos.needsUpdate = true;
+  waterGeo.computeVertexNormals();
+  // Rotate ship
+  shipGroup.rotation.y += 0.0009;
+  renderer.render(scene, camera);
+})();
+
+// ── SLIDESHOW STATE ───────────────────────────────────────────────
+let ships = [];
+let current = 0;
+let playing = true;
+let slideTimer = null;
+const SLIDE_MS = 20000;
+
+async function init() {
+  ships = await fetch('/api/ships').then(r => r.json());
+  document.getElementById('ctrl-right').textContent = `FROTA · ${ships.length} NAVIOS`;
+  buildDots();
+  resize();
+  goTo(0);
+}
+
+// ── DOTS NAV ──────────────────────────────────────────────────────
+function buildDots() {
+  const el = document.getElementById('ship-dots');
+  el.innerHTML = '';
+  ships.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ship-dot';
+    btn.id = 'dot-' + i;
+    btn.textContent = String(i + 1).padStart(2, '0');
+    btn.title = s.name;
+    btn.addEventListener('click', () => { goTo(i); resetTimer(); });
+    el.appendChild(btn);
+  });
+}
+
+function setActiveDot(i) {
+  document.querySelectorAll('.ship-dot').forEach((d, j) => d.classList.toggle('active', j === i));
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────
+function resetTimer() {
+  clearTimeout(slideTimer);
+  // Restart CSS animation by re-inserting element
+  const fill = document.getElementById('timer-fill');
+  fill.classList.remove('running');
+  void fill.offsetWidth; // force reflow
+  if (playing) {
+    fill.classList.add('running');
+    slideTimer = setTimeout(() => next(), SLIDE_MS);
+  }
+}
+
+window.togglePlay = () => {
+  playing = !playing;
+  document.getElementById('play-btn').textContent = playing ? '⏸ PAUSA' : '▶ PLAY';
+  if (playing) {
+    resetTimer();
+  } else {
+    clearTimeout(slideTimer);
+    const fill = document.getElementById('timer-fill');
+    fill.classList.remove('running');
+  }
+};
+
+function next() {
+  goTo((current + 1) % ships.length);
+}
+
+// ── GO TO SLIDE ───────────────────────────────────────────────────
+function goTo(idx) {
+  current = idx;
+  setActiveDot(idx);
+  const ship = ships[idx];
+
+  // Update canvas label
+  document.getElementById('canvas-num').textContent = `NAVIO ${String(idx+1).padStart(2,'0')} / ${String(ships.length).padStart(2,'0')}`;
+  document.getElementById('canvas-name').textContent = ship.name.toUpperCase();
+
+  // Animate info panel out → in
+  const inner = document.getElementById('info-inner');
+  inner.classList.add('exit');
+  setTimeout(() => {
+    renderPanel(ship, idx);
+    inner.classList.remove('exit');
+    inner.classList.add('enter');
+    requestAnimationFrame(() => {
+      inner.classList.remove('enter');
+    });
+  }, 350);
+
+  // Veil transition for 3D
+  const veil = document.getElementById('veil');
+  veil.classList.add('show');
+  setTimeout(() => {
+    loadShip(ship);
+    veil.classList.remove('show');
+  }, 400);
+
+  resetTimer();
+}
+
+// ── PANEL CONTENT ─────────────────────────────────────────────────
+function renderPanel(ship, idx) {
+  const specs = Object.entries(ship.specs || {}).slice(0, 6);
+  const specsHtml = specs.map(([k,v]) =>
+    `<div class="spec-cell"><div class="spec-k">${k.toUpperCase()}</div><div class="spec-v">${v}</div></div>`
+  ).join('');
+
+  document.getElementById('info-inner').innerHTML = `
+    <div class="info-index">
+      <span>${String(idx+1).padStart(2,'0')} / ${String(ships.length).padStart(2,'0')}</span>
+      <div class="info-index-line"></div>
+      <span>${ship.flag || 'PT'} · IMO ${ship.imo || '—'}</span>
+    </div>
+
+    <div class="info-name">${ship.name}</div>
+    <div class="info-sub">${ship.subtitle || ''}</div>
+
+    <div class="divider"></div>
+
+    <div class="info-desc">${ship.description || ''}</div>
+
+    <div class="specs-grid">${specsHtml}</div>
+
+    <div class="status-row">
+      <div class="status-dot"></div>
+      <div class="status-txt">${ship.status || 'EM SERVIÇO'}</div>
+    </div>
+
+    <a class="cta-explore" href="viewer.html?ship=${ship._folder}">
+      <span>EXPLORAR MODELO 3D</span>
+      <span class="cta-arrow">→</span>
+    </a>`;
+}
+
+// ── LOAD SHIP 3D ──────────────────────────────────────────────────
+function setProg(pct) {
+  document.getElementById('load-fill').style.width = pct + '%';
+  document.getElementById('load-pct').textContent = Math.round(pct) + '%';
+}
+
+function showLoad(name) {
+  document.getElementById('load-name').textContent = name;
+  const ov = document.getElementById('load-overlay');
+  ov.classList.remove('fade');
+  setProg(0);
+}
+
+function hideLoad() {
+  setTimeout(() => document.getElementById('load-overlay').classList.add('fade'), 300);
+}
+
+function fixMats(obj) {
+  obj.traverse(c => {
+    if (!c.isMesh) return;
+    const ms = Array.isArray(c.material) ? c.material : [c.material];
+    ms.forEach(m => { m.transparent = false; m.opacity = 1; m.depthWrite = true; m.depthTest = true; m.needsUpdate = true; });
+    c.castShadow = true;
+    c.receiveShadow = true;
+  });
+}
+
+function placeShip(obj) {
+  fixMats(obj);
+  const box = new THREE.Box3().setFromObject(obj);
+  const cen = box.getCenter(new THREE.Vector3());
+  obj.position.set(-cen.x, -box.min.y, -cen.z);
+  shipGroup.add(obj);
+  hideLoad();
+  setProg(100);
+}
+
+let loadGeneration = 0; // cancel stale loads
+
+function loadShip(ship) {
+  const gen = ++loadGeneration;
+
+  // Dispose previous meshes
+  while (shipGroup.children.length) {
+    const c = shipGroup.children[0];
+    c.traverse(x => { if (x.isMesh) { x.geometry.dispose(); } });
+    shipGroup.remove(c);
+  }
+
+  const m = ship.model || {};
+  shipGroup.rotation.y = m.rotationOffset || 0;
+
+  // Camera
+  const radius = m.cameraRadius || 200;
+  const tgt = new THREE.Vector3(...(m.cameraTarget || [0, 20, 0]));
+  const pitch = m.cameraPitch || 0.28;
+  camera.position.set(tgt.x, tgt.y + radius * Math.sin(pitch), tgt.z + radius * Math.cos(pitch));
+  camera.lookAt(tgt);
+  resize();
+
+  showLoad(ship.name);
+
+  const folder  = ship._folder;
+  const objFile = m.obj || 'model.obj';
+  const mtlFile = m.mtl;
+
+  function placeIfCurrent(obj) {
+    if (gen !== loadGeneration) return; // user moved on
+    placeShip(obj);
+  }
+
+  function loadFallback() {
+    if (gen !== loadGeneration) return;
+    setProg(35);
+    const ol = new OBJLoader();
+    ol.setPath(`/${folder}/`);
+    ol.load(objFile,
+      obj => {
+        if (gen !== loadGeneration) return;
+        const pal = [0xd0d8e0, 0x2a3a4a, 0x8090a0, 0xc03030, 0x505860, 0x203040, 0xa0b0c0];
+        let i = 0;
+        obj.traverse(c => { if (c.isMesh) c.material = new THREE.MeshStandardMaterial({ color: pal[i++ % pal.length], roughness: .55, metalness: .3 }); });
+        placeIfCurrent(obj);
+      },
+      xhr => { if (gen === loadGeneration && xhr.total) setProg(35 + (xhr.loaded / xhr.total) * 60); }
+    );
+  }
+
+  if (mtlFile) {
+    setProg(5);
+    const ml = new MTLLoader();
+    ml.setPath(`/${folder}/`);
+    ml.load(mtlFile,
+      mats => {
+        if (gen !== loadGeneration) return;
+        setProg(30);
+        mats.preload();
+        const ol = new OBJLoader();
+        ol.setMaterials(mats);
+        ol.setPath(`/${folder}/`);
+        ol.load(objFile,
+          obj => { if (gen !== loadGeneration) return; setProg(96); placeIfCurrent(obj); },
+          xhr => { if (gen === loadGeneration && xhr.total) setProg(30 + (xhr.loaded / xhr.total) * 64); },
+          () => loadFallback()
+        );
+      },
+      null,
+      () => loadFallback()
+    );
+  } else {
+    loadFallback();
+  }
+}
+
+init();
+</script>
+</body>
+</html>
