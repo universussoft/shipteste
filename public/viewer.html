@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Visualizador 3D · OceanVast</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
@@ -81,6 +81,96 @@ input[type=range]{width:72px;accent-color:var(--accent)}
 .lb-detail-row{display:flex;flex-direction:column;gap:2px}
 .lb-detail-k{font-family:'Barlow Condensed';font-size:.62rem;letter-spacing:.17em;color:rgba(143,168,194,.55)}
 .lb-detail-v{font-family:'Barlow Condensed';font-size:.85rem;color:var(--white)}
+
+/* ── MOBILE ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Full vertical layout: topbar → 3D canvas → controls → sidebar as bottom sheet */
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 52px 1fr 56px;
+    grid-template-areas:
+      "tb"
+      "vw"
+      "ct";
+    height: 100dvh;
+  }
+
+  /* Top bar compact */
+  #tb { padding: 0 14px; }
+  .logo { font-size: 1.2rem; letter-spacing: .1em; }
+  .tb-sub { display: none; }
+  .tb-name { font-size: 1rem; }
+  .back-btn { padding: 5px 10px; font-size: .72rem; letter-spacing: .08em; }
+
+  /* 3D viewer fills most of screen */
+  #vw { position: relative; }
+
+  /* Sidebar hidden off-screen, toggled via button */
+  #sb {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 55vh;
+    z-index: 30;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 14px 14px 0 0;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    background: rgba(6,10,18,.98);
+  }
+  #sb.open { transform: translateY(0); }
+
+  /* Drag handle on sidebar */
+  #sb::before {
+    content: '';
+    display: block;
+    width: 36px; height: 4px;
+    background: rgba(0,212,255,.3);
+    border-radius: 2px;
+    margin: 10px auto 6px;
+    flex-shrink: 0;
+  }
+
+  /* Controls bar: show sidebar toggle */
+  #ct {
+    gap: 10px; padding: 0 14px;
+    justify-content: space-between;
+  }
+  .ctrl-hint { display: none; }
+  .ctrl-sw   { gap: 5px; }
+  .ctrl-sw label { display: none; }
+  input[type=range] { width: 60px; }
+
+  /* Lightbox full screen on mobile */
+  .lb-card {
+    width: 100vw; max-width: 100vw;
+    height: 100dvh; border-radius: 0;
+    border: none;
+  }
+  .lb-3d { height: 200px; }
+  .lb-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .lb-details {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding-left: 0; padding-top: 12px;
+    min-width: unset;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+
+  /* Hotspots bigger touch targets */
+  .hs-dot  { width: 44px; height: 44px; }
+  .hs-ring { width: 44px; height: 44px; font-size: 1.1rem; }
+  /* Show label always on mobile (no hover) */
+  .hs-tip  { opacity: 1; font-size: .68rem; padding: 3px 8px; }
+}
+
+@media (max-width: 400px) {
+  .tb-name { font-size: .85rem; }
+  .lb-details { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -115,6 +205,7 @@ input[type=range]{width:72px;accent-color:var(--accent)}
   </div>
 
   <div id="ct">
+    <button class="ctrl" id="btn-sb" onclick="toggleSidebar()">☰ INFO</button>
     <button class="ctrl on" id="btn-rot" onclick="toggleRot()">⟳ AUTO</button>
     <button class="ctrl" onclick="resetCam()">⌖ CENTRAR</button>
     <div class="ctrl-sw">VEL <input type="range" id="speed" min="1" max="10" value="4"></div>
@@ -478,6 +569,19 @@ function loop(water) {
 }
 
 init();
+
+// Mobile sidebar toggle
+window.toggleSidebar = () => {
+  const sb = document.getElementById('sb');
+  sb.classList.toggle('open');
+};
+// Close sidebar when clicking lightbox open
+const origOpenLB = window.openLB;
+window.openLB = hs => {
+  document.getElementById('sb')?.classList.remove('open');
+  origOpenLB(hs);
+};
+
 </script>
 </body>
 </html>
