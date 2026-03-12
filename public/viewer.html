@@ -120,16 +120,32 @@ input[type=range]{width:72px;accent-color:var(--accent)}
   }
   #sb.open { transform: translateY(0); }
 
-  /* Drag handle on sidebar */
+  /* Close button */
+  #btn-sb-close {
+    display: flex !important;
+    align-items: center; justify-content: center;
+    position: absolute; top: 6px; right: 12px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(0,212,255,.12);
+    border: 1px solid rgba(0,212,255,.35);
+    color: #00d4ff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 50;
+  }
+
+  /* Drag handle bar */
   #sb::before {
     content: '';
     display: block;
     width: 36px; height: 4px;
     background: rgba(0,212,255,.3);
     border-radius: 2px;
-    margin: 10px auto 6px;
+    margin: 10px auto 0;
     flex-shrink: 0;
   }
+
 
   /* Controls bar: show sidebar toggle */
   #ct {
@@ -159,9 +175,6 @@ input[type=range]{width:72px;accent-color:var(--accent)}
     min-width: unset;
     display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
   }
-
-  /* Show close button in sidebar */
-  #btn-sb-close { display: block !important; }
 
   /* Hotspots bigger touch targets */
   .hs-dot  { width: 44px; height: 44px; }
@@ -198,8 +211,8 @@ input[type=range]{width:72px;accent-color:var(--accent)}
   </div>
 
   <div id="sb">
-    <div class="sb-head" style="position:relative">
-      <button id="btn-sb-close" onclick="document.getElementById('sb').classList.remove('open')" style="display:none;position:absolute;top:0;right:12px;background:none;border:none;color:rgba(122,154,184,.6);font-size:1.2rem;cursor:pointer;padding:4px 8px;line-height:1" title="Fechar">✕</button>
+    <button id="btn-sb-close" onclick="closeSidebar()" style="display:none">✕</button>
+    <div class="sb-head">
       <div class="sb-title">PONTOS DE INTERESSE</div>
       <div class="sb-count" id="sb-count">A carregar...</div>
     </div>
@@ -609,13 +622,22 @@ init();
 
 // Mobile sidebar toggle
 window.toggleSidebar = () => {
-  const sb = document.getElementById('sb');
+  const sb  = document.getElementById('sb');
+  const btn = document.getElementById('btn-sb-close');
+  const opening = !sb.classList.contains('open');
   sb.classList.toggle('open');
+  if (btn) btn.style.display = opening ? 'flex' : 'none';
 };
+// Also hide close btn when sidebar is closed programmatically
+function closeSidebar() {
+  document.getElementById('sb')?.classList.remove('open');
+  const btn = document.getElementById('btn-sb-close');
+  if (btn) btn.style.display = 'none';
+}
 // Close sidebar when clicking lightbox open
 const origOpenLB = window.openLB;
 window.openLB = hs => {
-  document.getElementById('sb')?.classList.remove('open');
+  closeSidebar();
   origOpenLB(hs);
 };
 
