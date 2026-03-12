@@ -160,6 +160,9 @@ input[type=range]{width:72px;accent-color:var(--accent)}
     display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
   }
 
+  /* Show close button in sidebar */
+  #btn-sb-close { display: block !important; }
+
   /* Hotspots bigger touch targets */
   .hs-dot  { width: 44px; height: 44px; }
   .hs-ring { width: 44px; height: 44px; font-size: 1.1rem; }
@@ -195,7 +198,8 @@ input[type=range]{width:72px;accent-color:var(--accent)}
   </div>
 
   <div id="sb">
-    <div class="sb-head">
+    <div class="sb-head" style="position:relative">
+      <button id="btn-sb-close" onclick="document.getElementById('sb').classList.remove('open')" style="display:none;position:absolute;top:0;right:12px;background:none;border:none;color:rgba(122,154,184,.6);font-size:1.2rem;cursor:pointer;padding:4px 8px;line-height:1" title="Fechar">✕</button>
       <div class="sb-title">PONTOS DE INTERESSE</div>
       <div class="sb-count" id="sb-count">A carregar...</div>
     </div>
