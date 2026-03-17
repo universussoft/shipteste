@@ -1,94 +1,153 @@
 {
   "id": "ship1",
-  "name": "Lusitânia II",
-  "subtitle": "Graneleiro de Carga Mista",
-  "description": "O Lusitânia II representa o pináculo da engenharia naval portuguesa, concebido para operar em rotas atlânticas de longo curso com eficiência e segurança máximas. Com casco optimizado por dinâmica computacional de fluidos, integra sistemas de propulsão híbrida e gestão inteligente de lastro.",
-  "status": "Em Serviço · Atlântico Norte",
+  "name": "Tejo Carrier",
+  "subtitle": "Offshore Supply Vessel",
+  "description": "Compact and highly capable offshore supply vessel designed for demanding operations. Features a 900 m² working deck, diesel-electric propulsion, DP II dynamic positioning and hybrid-ready energy storage.",
+  "status": "Em Serviço · Offshore",
   "flag": "PT",
-  "imo": "9876543",
+  "imo": "9512043",
   "specs": {
-    "Comprimento": "189.4 m",
-    "Boca": "28.6 m",
-    "Tonelagem": "28 400 DWT",
-    "Calado": "9.8 m",
-    "Velocidade": "16.2 nós",
-    "Autonomia": "14 200 nm",
-    "Propulsão": "2× MAN B&W",
-    "Construção": "2019 · Lisboa"
+    "Comprimento": "81 m (LOA)",
+    "Boca": "18 m",
+    "Calado": "6.5 m",
+    "Convés": "900 m²",
+    "Propulsão": "Diesel-Electric 2× 1 500 kW",
+    "Posicionamento": "DP II – AUTR"
   },
   "model": {
-    "obj": "Ship_N110220.obj",
-    "mtl": "Ship_N110220.mtl",
+    "gltf": "Final_Right_Scale.gltf",
     "scale": 1,
-    "rotationOffset": 0,
-    "cameraRadius": 210,
-    "cameraTarget": [0, 22, 0],
-    "cameraPitch": 0.28
+    "rotationOffset": 210,
+    "yOffset": -4,
+    "cameraRadius": 180,
+    "cameraTarget": [0, 5, -20],
+    "cameraPitch": 0.25
   },
   "hotspots": [
     {
-      "id": "proa",
-      "name": "Proa Bulbosa",
-      "icon": "⚓",
-      "position": { "x": 0, "y": 6, "z": 75 },
-      "color": "#00d4ff",
-      "description": "A proa bulbosa reduz a resistência hidrodinâmica até 15%, melhorando a eficiência de combustível em mar alto e condições adversas.",
+      "id": "compact_size",
+      "name": "Compact Size",
+      "icon": "📐",
+      "position": { "x": 39.7, "y": 36, "z": -0.4 },
+      "cameraDistance": 160,
+      "description": "Compact and versatile hull designed for nearshore and offshore operations, with accommodation for up to 36 persons.",
       "details": [
-        { "label": "Redução de resistência", "value": "até 15%" },
-        { "label": "Material", "value": "Aço de alta resistência AH36" },
-        { "label": "Comprimento submerso", "value": "4.2 m" }
+        { "label": "LOA", "value": "81 metres" },
+        { "label": "Breadth", "value": "18 metres" },
+        { "label": "Draft (max)", "value": "6.5 metres" },
+        { "label": "Vert. Stack", "value": "SS 14.5 m + bridge" },
+        { "label": "Accommodation", "value": "36 pax" }
       ]
     },
     {
-      "id": "conves",
-      "name": "Convés de Carga",
-      "icon": "📦",
-      "position": { "x": 0, "y": 37, "z": 15 },
-      "color": "#00d4ff",
-      "description": "Convés principal com capacidade para 120 TEU, sistema de grua dupla e tanques de lastro integrados para estabilidade.",
+      "id": "key_capacities",
+      "name": "Key Capacities",
+      "icon": "🛢️",
+      "position": { "x": 39.7, "y": 32, "z": -0.4 },
+      "cameraDistance": 150,
+      "description": "Optimised cargo tanks for liquid mud and methanol carriage, fully customisable to client requirements.",
       "details": [
-        { "label": "Capacidade", "value": "120 TEU" },
-        { "label": "Gruas", "value": "2× 35 ton SWL" },
-        { "label": "Área útil", "value": "2 400 m²" }
+        { "label": "Liquid Mud", "value": "800 m³" },
+        { "label": "Methanol (LFL)", "value": "250 m³" },
+        { "label": "Configuration", "value": "Highly Customizable" }
       ]
     },
     {
-      "id": "porao",
-      "name": "Porão Principal",
+      "id": "working_deck",
+      "name": "Working Deck",
       "icon": "🏗️",
-      "position": { "x": 10, "y": 18, "z": 0 },
-      "color": "#00d4ff",
-      "description": "Porão de carga refrigerada com temperatura controlada entre -25°C e +12°C, capacidade total de 3 800 m³.",
+      "position": { "x": -2.7, "y": 7.6, "z": -2.6 },
+      "cameraDistance": 160,
+      "description": "Large unobstructed working deck designed for efficient cargo handling and offshore supply operations.",
       "details": [
-        { "label": "Capacidade", "value": "3 800 m³" },
-        { "label": "Temperatura", "value": "-25°C a +12°C" },
-        { "label": "Divisórias", "value": "4 compartimentos" }
+        { "label": "Clear Area", "value": "900 m²" },
+        { "label": "Layout", "value": "Open, unobstructed" }
       ]
     },
     {
-      "id": "ponte",
-      "name": "Ponte de Comando",
-      "icon": "🧭",
-      "position": { "x": 0, "y": 43, "z": -35 },
-      "color": "#00d4ff",
-      "description": "Equipada com ECDIS duplo, radar de banda X/S e sistema de posicionamento dinâmico classe DP2.",
+      "id": "load_capacity",
+      "name": "Load Capacity",
+      "icon": "⚖️",
+      "position": { "x": 16.7, "y": 11.7, "z": 3.4 },
+      "cameraDistance": 150,
+      "description": "High structural deck load capacity with two foldable cranes for versatile cargo handling.",
       "details": [
-        { "label": "Sistema nav.", "value": "ECDIS duplo redundante" },
-        { "label": "Posicionamento", "value": "DP2 classe" },
-        { "label": "Radar", "value": "X-band + S-band" }
+        { "label": "Deck Load", "value": "15 ton/m²" },
+        { "label": "Crane 1", "value": "3.05 t @ 9.6 m (Foldable)" },
+        { "label": "Crane 2", "value": "1.38 t @ 7.9 m (Foldable)" }
       ]
     },
     {
-      "id": "maquinas",
-      "name": "Casa das Máquinas",
+      "id": "high_discharge",
+      "name": "High Discharge Rates",
+      "icon": "💧",
+      "position": { "x": 39.7, "y": 28, "z": -0.4 },
+      "cameraDistance": 140,
+      "description": "Optimised manifold system enabling high-speed discharge of liquid cargo to platform and rig clients.",
+      "details": [
+        { "label": "System", "value": "Optimized manifolds" },
+        { "label": "Application", "value": "Liquid mud & methanol" }
+      ]
+    },
+    {
+      "id": "dynamic_positioning",
+      "name": "Dynamic Positioning",
+      "icon": "🎯",
+      "position": { "x": 15.5, "y": 24.1, "z": -2.6 },
+      "cameraDistance": 150,
+      "description": "DP II class dynamic positioning system with AUTR redundancy, enabling safe station-keeping near offshore installations.",
+      "details": [
+        { "label": "Class", "value": "DP II" },
+        { "label": "Standard", "value": "AUTR" }
+      ]
+    },
+    {
+      "id": "emissions",
+      "name": "Emissions",
+      "icon": "🌱",
+      "position": { "x": 39.7, "y": 24, "z": -0.4 },
+      "cameraDistance": 150,
+      "description": "IMO Tier III compliant exhaust aftertreatment via Selective Catalytic Reduction (SCR), minimising NOx emissions.",
+      "details": [
+        { "label": "Standard", "value": "IMO Tier III" },
+        { "label": "Technology", "value": "SCR (Selective Catalytic Reduction)" }
+      ]
+    },
+    {
+      "id": "energy_storage",
+      "name": "Energy Storage",
+      "icon": "🔋",
+      "position": { "x": 39.7, "y": 20, "z": -0.4 },
+      "cameraDistance": 150,
+      "description": "Hybrid-ready architecture with a 300 kWh battery Energy Storage System for peak shaving and zero-emission port operations.",
+      "details": [
+        { "label": "Type", "value": "Hybrid-Ready" },
+        { "label": "Capacity", "value": "300 kWh ESS (Battery)" }
+      ]
+    },
+    {
+      "id": "bow_thrusters",
+      "name": "Bow Thrusters",
+      "icon": "🌀",
+      "position": { "x": 29.6, "y": 1.7, "z": -1.5 },
+      "cameraDistance": 160,
+      "description": "Two fixed-pitch bow thrusters providing lateral thrust for precision manoeuvring in confined harbours and alongside platforms.",
+      "details": [
+        { "label": "Quantity", "value": "2×" },
+        { "label": "Power each", "value": "735 kW FPP" }
+      ]
+    },
+    {
+      "id": "propulsion",
+      "name": "Propulsion",
       "icon": "⚙️",
-      "position": { "x": 0, "y": 10, "z": -58 },
-      "color": "#00d4ff",
-      "description": "Dois motores MAN B&W de 12 400 kW cada, sistema de recuperação de calor residual e scrubber SOx integrado.",
+      "position": { "x": -38, "y": 2.3, "z": 3.4 },
+      "cameraDistance": 160,
+      "description": "Diesel-electric propulsion driving two azimuth thrusters with fixed-pitch propellers in nozzles for high efficiency and manoeuvrability.",
       "details": [
-        { "label": "Potência total", "value": "24 800 kW" },
-        { "label": "Motores", "value": "2× MAN B&W 7S60ME" },
-        { "label": "Emissões", "value": "SOx scrubber EGCS" }
+        { "label": "Type", "value": "Diesel-Electric" },
+        { "label": "Power", "value": "2× 1 500 kW" },
+        { "label": "Thrusters", "value": "Azimuth FPP in nozzles" }
       ]
     }
   ]

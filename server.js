@@ -15,6 +15,9 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders(res, filePath) {
     res.setHeader('Cache-Control', filePath.endsWith('.html') ? 'no-store' : 'max-age=3600');
+    if (filePath.endsWith('.js') || filePath.endsWith('.module.js')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    }
   }
 }));
 
@@ -51,6 +54,8 @@ discoverShips().forEach(({ id, dir }) => {
     setHeaders(res, filePath) {
       const ext = path.extname(filePath).toLowerCase();
       if (ext === '.obj' || ext === '.mtl') res.setHeader('Content-Type', 'text/plain');
+      if (ext === '.glb') res.setHeader('Content-Type', 'model/gltf-binary');
+      if (ext === '.gltf') res.setHeader('Content-Type', 'model/gltf+json');
       res.setHeader('Cache-Control', 'max-age=3600');
     }
   }));

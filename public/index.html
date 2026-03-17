@@ -5,291 +5,372 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>OceanVast — Frota Naval</title>
 <meta http-equiv="Cache-Control" content="no-store">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --accent: #00d4ff;
-  --deep:   #03060c;
-  --silver: #7a9ab8;
-  --white:  #eef3f8;
-  --border: rgba(0,212,255,.12);
-  --nav-h:  56px;
-  --ctrl-h: 68px;
-  --slide-dur: 20s;
+  --blue:       #1a3a5c;
+  --accent:     #0077b6;
+  --sky:        #e8f4fb;
+  --bg:         #f2f6fa;
+  --white:      #ffffff;
+  --muted:      #5a7080;
+  --border:     #d0dce8;
+  --green:      #2db46a;
+  --green-bg:   #eef8f2;
+  --green-bd:   #b8e0c4;
+  --nav-h:      60px;
+  --ctrl-h:     64px;
+  --panel-w:    400px;   /* desktop info panel */
+  --slide-dur:  20s;
 }
 
-html, body {
-  width: 100%; height: 100%;
-  background: var(--deep);
-  overflow: hidden;
-}
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
+             font-family: 'Open Sans', sans-serif; color: var(--blue); }
 
-/* ── NAV ─────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════════ */
 #nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: var(--nav-h); z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 32px;
-  background: rgba(3,6,12,.97);
-  border-bottom: 1px solid rgba(0,212,255,.1);
+  position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+  z-index: 100; display: flex; align-items: center;
+  padding: 0 28px; gap: 0;
+  background: var(--white);
+  border-bottom: 3px solid var(--accent);
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
 }
 .logo {
-  font-family: 'Bebas Neue'; font-size: 1.7rem; letter-spacing: .18em;
-  color: var(--accent); text-shadow: 0 0 20px rgba(0,212,255,.4);
+  font-family: 'Montserrat'; font-weight: 700; font-size: 1.25rem;
+  letter-spacing: .07em; color: var(--blue);
+  display: flex; align-items: center; gap: 8px; margin-right: 32px; flex-shrink: 0;
 }
-.nav-links { display: flex; gap: 24px; }
+.logo-icon { font-size: 1.1rem; }
+.nav-links { display: flex; flex: 1; }
 .nav-links a {
-  font-family: 'Barlow Condensed'; font-size: .72rem; letter-spacing: .18em;
-  color: rgba(122,154,184,.55); text-decoration: none; transition: color .2s;
+  font-family: 'Montserrat'; font-size: .68rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  padding: 0 14px; height: var(--nav-h);
+  display: flex; align-items: center;
+  border-bottom: 3px solid transparent; margin-bottom: -3px;
+  transition: color .2s, border-color .2s; white-space: nowrap;
 }
-.nav-links a:hover, .nav-links a.active { color: var(--accent); }
-.nav-right {
-  font-family: 'Barlow Condensed'; font-size: .68rem; letter-spacing: .12em;
-  color: rgba(122,154,184,.3);
+.nav-links a:hover, .nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
+.nav-tagline {
+  font-family: 'Open Sans'; font-size: .65rem; font-weight: 600;
+  letter-spacing: .05em; color: var(--muted); text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
 }
 
-/* ── DESKTOP LAYOUT: side by side ───────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   STAGE — 3D + INFO side by side (desktop)
+═══════════════════════════════════════════════════════════ */
 #stage {
-  position: fixed;
-  top: var(--nav-h); left: 0; right: 0;
-  bottom: var(--ctrl-h);
-  display: flex;
-  flex-direction: row;
+  position: fixed; top: var(--nav-h); left: 0; right: 0; bottom: var(--ctrl-h);
+  display: flex; flex-direction: row;
 }
 
-/* ── 3D VIEW ─────────────────────────────────────────────────── */
+/* 3D CANVAS AREA */
 #view {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-  min-width: 0;
+  flex: 1; position: relative; overflow: hidden; min-width: 0;
+  background: linear-gradient(155deg, #d6e8f4 0%, #e2eef8 55%, #c8daea 100%);
 }
-#canvas {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%; display: block;
-}
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-/* Loading */
 #load-overlay {
   position: absolute; inset: 0; z-index: 4;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 14px;
-  background: var(--deep);
-  transition: opacity .5s ease;
+  background: linear-gradient(155deg, #d8eaf4, #e6f0f8);
+  transition: opacity .5s;
 }
 #load-overlay.fade { opacity: 0; pointer-events: none; }
-.load-ship-name {
-  font-family: 'Bebas Neue'; font-size: 2.6rem; letter-spacing: .12em;
-  color: var(--accent); opacity: .3;
-}
-.load-bar { width: 140px; height: 1px; background: rgba(255,255,255,.08); overflow: hidden; }
-.load-fill { height: 100%; background: var(--accent); width: 0%; transition: width .2s; }
-.load-pct {
-  font-family: 'Barlow Condensed'; font-size: .68rem; letter-spacing: .14em;
-  color: rgba(122,154,184,.4);
-}
+.load-name { font-family: 'Montserrat'; font-size: .9rem; font-weight: 700;
+             letter-spacing: .18em; text-transform: uppercase; color: var(--blue); opacity: .4; }
+.load-bar  { width: 160px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.load-fill { height: 100%; background: var(--accent); width: 0%; transition: width .2s; border-radius: 2px; }
+.load-pct  { font-family: 'Montserrat'; font-size: .65rem; font-weight: 600;
+             letter-spacing: .12em; color: var(--muted); }
 
-/* Veil transition */
-#veil {
-  position: absolute; inset: 0; z-index: 3;
-  background: var(--deep);
-  opacity: 0; pointer-events: none;
-  transition: opacity .45s ease;
-}
+#veil { position: absolute; inset: 0; z-index: 3; background: var(--bg);
+        opacity: 0; pointer-events: none; transition: opacity .4s; }
 #veil.show { opacity: 1; }
 
-/* Watermark */
 #canvas-label {
-  position: absolute; bottom: 20px; left: 24px; z-index: 2;
-  pointer-events: none;
+  position: absolute; bottom: 20px; left: 22px; z-index: 2; pointer-events: none;
 }
-.canvas-num {
-  font-family: 'Barlow Condensed'; font-size: .65rem; letter-spacing: .25em;
-  color: rgba(180,200,220,.5); margin-bottom: 3px;
-}
-.canvas-name {
-  font-family: 'Bebas Neue'; font-size: 4rem; letter-spacing: .07em;
-  color: rgba(180,200,220,.35); line-height: 1;
+.cl-num  { font-family: 'Montserrat'; font-size: .55rem; font-weight: 700; letter-spacing: .22em;
+           color: var(--blue); opacity: .35; margin-bottom: 2px; text-transform: uppercase; }
+.cl-name { font-family: 'Montserrat'; font-size: 3rem; font-weight: 700; letter-spacing: .04em;
+           color: var(--blue); opacity: .08; line-height: 1; text-transform: uppercase; }
+
+.view-badge {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  padding: 5px 10px;
+  font-family: 'Montserrat'; font-size: .57rem; font-weight: 700;
+  letter-spacing: .12em; color: var(--accent); text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0,0,0,.07);
 }
 
-/* ── INFO PANEL ──────────────────────────────────────────────── */
+/* ─── INFO PANEL (desktop right side) ─────────────────────────── */
 #info {
-  width: 400px;
-  flex-shrink: 0;
-  background: rgba(4,7,14,.88);
+  width: var(--panel-w); flex-shrink: 0;
+  background: var(--white);
   border-left: 1px solid var(--border);
-  backdrop-filter: blur(10px);
+  box-shadow: -3px 0 18px rgba(0,0,0,.06);
   display: flex; flex-direction: column;
-  overflow: hidden;
+  overflow: hidden;  /* outer clips transitions */
 }
-#info-inner {
-  flex: 1; display: flex; flex-direction: column;
-  padding: 26px 22px 18px;
-  overflow: hidden;
-  transition: opacity .35s, transform .35s;
-}
-#info-inner.exit  { opacity: 0; transform: translateY(10px); }
-#info-inner.enter { opacity: 0; transform: translateY(-8px); }
 
+/* scrollable interior */
+#info-inner {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  display: flex; flex-direction: column;
+  padding: 24px 22px 0;
+  transition: opacity .3s, transform .3s;
+}
+#info-inner::-webkit-scrollbar { width: 4px; }
+#info-inner::-webkit-scrollbar-track { background: transparent; }
+#info-inner::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#info-inner.exit  { opacity: 0; transform: translateY(8px); }
+#info-inner.enter { opacity: 0; transform: translateY(-6px); }
+
+/* sticky CTA at the bottom of panel */
+#info-cta-wrap {
+  flex-shrink: 0; padding: 14px 22px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+
+/* ── info components ── */
 .info-idx {
-  font-family: 'Barlow Condensed'; font-size: .62rem; letter-spacing: .28em;
-  color: rgba(0,212,255,.4); margin-bottom: 8px;
-  display: flex; align-items: center; gap: 10px;
+  font-family: 'Montserrat'; font-size: .58rem; font-weight: 700;
+  letter-spacing: .2em; color: var(--accent); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
 }
 .info-idx-line { flex: 1; height: 1px; background: var(--border); }
 
 .info-name {
-  font-family: 'Bebas Neue'; font-size: 2.4rem; letter-spacing: .07em;
-  color: var(--white); line-height: 1; margin-bottom: 3px;
+  font-family: 'Montserrat'; font-size: 1.6rem; font-weight: 700;
+  color: var(--blue); line-height: 1.1; margin-bottom: 3px;
 }
 .info-sub {
-  font-family: 'Barlow Condensed'; font-size: .8rem; letter-spacing: .13em;
-  color: var(--accent); font-weight: 300; margin-bottom: 14px;
+  font-family: 'Open Sans'; font-size: .73rem; font-weight: 600;
+  letter-spacing: .04em; color: var(--accent); margin-bottom: 12px;
+  text-transform: uppercase;
 }
-.divider { height: 1px; background: var(--border); margin-bottom: 12px; }
+.info-meta {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 12px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.meta-tag {
+  font-family: 'Montserrat'; font-size: .56rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  background: var(--sky); color: var(--blue);
+  padding: 3px 7px; border: 1px solid var(--border);
+}
+
+.divider {
+  height: 2px; background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+  margin-bottom: 12px; border-radius: 1px;
+}
 .info-desc {
-  font-family: 'Barlow'; font-weight: 300; font-size: .8rem;
-  line-height: 1.7; color: rgba(165,190,210,.65);
-  margin-bottom: 14px;
-  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  font-family: 'Open Sans'; font-weight: 300; font-size: .8rem;
+  line-height: 1.8; color: var(--muted); margin-bottom: 14px;
+  /* no clamp — show full text, panel scrolls */
 }
+
 .specs-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-  background: rgba(0,212,255,.06); margin-bottom: 12px; flex-shrink: 0;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); margin-bottom: 14px;
 }
-.spec-cell { padding: 8px 10px; background: rgba(4,8,16,.92); }
+.spec-cell { padding: 8px 10px; background: var(--white); }
 .spec-k {
-  font-family: 'Barlow Condensed'; font-size: .58rem; letter-spacing: .2em;
-  color: var(--silver); margin-bottom: 2px; opacity: .7;
+  font-family: 'Montserrat'; font-size: .52rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); opacity: .65; margin-bottom: 2px;
 }
 .spec-v {
-  font-family: 'Barlow Condensed'; font-size: .88rem; font-weight: 600;
-  color: var(--white); letter-spacing: .04em;
+  font-family: 'Montserrat'; font-size: .82rem; font-weight: 600;
+  color: var(--blue); letter-spacing: .01em;
 }
+
 .status-row {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; margin-bottom: 14px;
+  background: var(--green-bg); border: 1px solid var(--green-bd);
 }
 .status-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: #2aff8f;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--green);
   animation: blink 2.5s infinite; flex-shrink: 0;
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 .status-txt {
-  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .13em;
-  color: rgba(42,255,143,.65);
+  font-family: 'Montserrat'; font-size: .65rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: #1a7040;
 }
+
 .cta {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 15px; border: 1px solid rgba(0,212,255,.28);
-  color: var(--accent); text-decoration: none;
-  font-family: 'Barlow Condensed'; font-size: .76rem; letter-spacing: .17em;
-  background: none; transition: .2s; margin-top: auto; flex-shrink: 0;
+  padding: 13px 16px;
+  background: var(--accent); color: var(--white);
+  text-decoration: none;
+  font-family: 'Montserrat'; font-size: .7rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  transition: background .2s;
 }
-.cta:hover { background: rgba(0,212,255,.07); border-color: var(--accent); }
+.cta:hover { background: var(--blue); }
 .cta-arrow { transition: transform .2s; }
-.cta:hover .cta-arrow { transform: translateX(4px); }
+.cta:hover .cta-arrow { transform: translateX(5px); }
 
-/* ── CONTROLS BAR ────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   CONTROLS BAR (bottom)
+═══════════════════════════════════════════════════════════ */
 #ctrl {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  height: var(--ctrl-h);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px;
-  background: rgba(3,6,12,.97);
-  border-top: 1px solid rgba(0,212,255,.08);
+  position: fixed; bottom: 0; left: 0; right: 0; height: var(--ctrl-h);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 12px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 10px rgba(0,0,0,.05);
   z-index: 50;
 }
-.ship-dots { display: flex; align-items: center; gap: 8px; }
+.ship-dots { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
 .ship-dot {
-  width: 30px; height: 30px; border-radius: 50%;
-  border: 1px solid rgba(0,212,255,.22);
-  background: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Barlow Condensed'; font-size: .68rem;
-  color: rgba(122,154,184,.45); transition: .2s;
+  padding: 0 13px; height: 34px;
+  border: 1px solid var(--border); background: none; cursor: pointer;
+  font-family: 'Montserrat'; font-size: .6rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); transition: .2s; white-space: nowrap; max-width: 150px;
+  overflow: hidden; text-overflow: ellipsis;
 }
-.ship-dot:hover { border-color: var(--accent); color: var(--accent); }
-.ship-dot.active { border-color: var(--accent); background: rgba(0,212,255,.12); color: var(--accent); }
-.timer-wrap { flex: 1; display: flex; align-items: center; gap: 10px; padding: 0 20px; }
+.ship-dot:hover { border-color: var(--accent); color: var(--accent); background: var(--sky); }
+.ship-dot.active { background: var(--accent); color: var(--white); border-color: var(--accent); border-left: 3px solid var(--blue); }
+
+.timer-wrap { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; }
 .timer-label {
-  font-family: 'Barlow Condensed'; font-size: .62rem; letter-spacing: .17em;
-  color: rgba(122,154,184,.3); flex-shrink: 0;
+  font-family: 'Montserrat'; font-size: .58rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted); flex-shrink: 0;
 }
-.timer-track { flex: 1; height: 1px; background: rgba(0,212,255,.1); position: relative; }
-.timer-fill { position: absolute; inset: 0; background: var(--accent); width: 0%; }
+.timer-track { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; min-width: 40px; }
+.timer-fill  { height: 100%; background: var(--accent); width: 0%; border-radius: 2px; }
 .timer-fill.running { animation: timer-run var(--slide-dur) linear forwards; }
 @keyframes timer-run { from{width:0%} to{width:100%} }
+
 .play-btn {
-  background: none; border: 1px solid rgba(0,212,255,.18);
-  color: rgba(122,154,184,.55); padding: 6px 13px;
-  font-family: 'Barlow Condensed'; font-size: .7rem; letter-spacing: .13em;
-  cursor: pointer; transition: .2s;
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); padding: 7px 14px;
+  font-family: 'Montserrat'; font-size: .62rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+  cursor: pointer; transition: .2s; flex-shrink: 0;
 }
-.play-btn:hover { border-color: var(--accent); color: var(--accent); }
+.play-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--sky); }
 .ctrl-label {
-  font-family: 'Barlow Condensed'; font-size: .64rem; letter-spacing: .1em;
-  color: rgba(122,154,184,.25);
+  font-family: 'Montserrat'; font-size: .6rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--muted); flex-shrink: 0;
 }
 
-/* ── MOBILE ──────────────────────────────────────────────────── */
-@media (max-width: 700px) {
-  :root { --nav-h: 50px; --ctrl-h: 60px; }
+/* ═══════════════════════════════════════════════════════════
+   MOBILE LAYOUT  (≤ 768px)
+   Stacked: canvas top, info bottom as scrollable drawer
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root { --nav-h: 52px; --ctrl-h: 56px; }
 
-  /* Nav: logo only */
-  .nav-links, .nav-right { display: none; }
-  #nav { padding: 0 18px; }
-  .logo { font-size: 1.45rem; }
+  /* Hide desktop extras */
+  .nav-links, .nav-tagline { display: none; }
+  #nav { padding: 0 16px; }
+  .logo { font-size: 1.1rem; margin-right: 0; }
 
-  /* Stage: vertical stack */
-  #stage {
-    flex-direction: column;
-    top: var(--nav-h);
-    bottom: var(--ctrl-h);
-  }
+  /* Stack vertically */
+  #stage { flex-direction: column; }
 
-  /* 3D: fixed height */
-  #view { flex: 0 0 42vh; }
+  /* Canvas: fixed portion */
+  #view { flex: 0 0 45vw; min-height: 200px; }
+  .cl-name { font-size: 1.8rem; }
+  .view-badge { display: none; }
 
-  /* Info: scrollable below */
+  /* Info: fills remaining, becomes scrollable */
   #info {
     flex: 1;
     width: 100%;
     border-left: none;
-    border-top: 1px solid var(--border);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    border-top: 2px solid var(--accent);
+    box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+    /* pull-tab visual */
+    position: relative;
+  }
+  #info::before {
+    content: '';
+    display: block;
+    width: 36px; height: 4px; border-radius: 2px;
+    background: var(--border);
+    margin: 8px auto 0;
+    flex-shrink: 0;
   }
   #info-inner {
-    overflow: visible;
-    padding: 16px 16px 12px;
+    padding: 12px 16px 0;
+    /* use flex column so content flows naturally; overflow scrolls */
+    overflow-y: auto;
   }
+  #info-cta-wrap { padding: 10px 16px; }
 
-  /* Typography adjustments */
-  .info-name { font-size: 1.9rem; }
-  .info-sub  { font-size: .74rem; margin-bottom: 10px; }
-  .info-desc { font-size: .78rem; -webkit-line-clamp: 3; margin-bottom: 10px; }
-  .canvas-name { font-size: 2rem; }
-
-  /* Specs: smaller cells */
-  .specs-grid { margin-bottom: 10px; }
-  .spec-cell  { padding: 7px 8px; }
-  .spec-v     { font-size: .82rem; }
+  /* Slightly smaller type on mobile */
+  .info-name { font-size: 1.35rem; }
+  .info-sub  { font-size: .7rem; margin-bottom: 10px; }
+  .info-desc { font-size: .78rem; line-height: 1.7; }
+  .spec-v    { font-size: .78rem; }
+  .spec-cell { padding: 7px 8px; }
 
   /* Controls: tighter */
-  #ctrl { padding: 0 14px; gap: 8px; }
-  .ship-dot  { width: 28px; height: 28px; }
-  .timer-wrap { padding: 0 10px; }
-  .play-btn  { padding: 5px 10px; font-size: .66rem; }
-  .ctrl-label { display: none; }
+  #ctrl { padding: 0 12px; gap: 8px; }
   .timer-label { display: none; }
+  .ctrl-label  { display: none; }
+  .ship-dot    { padding: 0 9px; height: 30px; font-size: .56rem; max-width: 120px; }
+  .play-btn    { padding: 6px 10px; font-size: .58rem; }
 }
 
+/* Very small screens */
 @media (max-width: 380px) {
-  #view { flex: 0 0 38vh; }
-  .info-name { font-size: 1.6rem; }
+  #view { flex: 0 0 38vw; }
+  .info-name { font-size: 1.2rem; }
   .specs-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Tall mobile: give more to canvas if viewport is tall ──── */
+@media (max-width: 768px) and (min-height: 700px) {
+  #view { flex: 0 0 42vh; }
+}
+@media (max-width: 768px) and (min-height: 900px) {
+  #view { flex: 0 0 50vh; }
+}
+
+/* ── Landscape mobile: side by side with smaller panel ──────── */
+@media (max-width: 900px) and (max-height: 500px) {
+  #stage { flex-direction: row; }
+  #view  { flex: 1; }
+  #info  {
+    width: 280px; border-top: none; border-left: 1px solid var(--border);
+    flex: 0 0 280px;
+  }
+  #info::before { display: none; }
+  #info-inner { padding: 10px 12px 0; }
+  #info-cta-wrap { padding: 8px 12px; }
+  .info-name { font-size: 1.1rem; }
+  .specs-grid { grid-template-columns: 1fr; }
+  .info-desc { font-size: .74rem; }
 }
 </style>
 </head>
@@ -297,93 +378,162 @@ html, body {
 
 <!-- NAV -->
 <div id="nav">
-  <div class="logo">OceanVast</div>
-  <div class="nav-links">
-    <a href="#" class="active">FROTA</a>
-    <a href="#">ROTAS</a>
-    <a href="#">OPERAÇÕES</a>
-    <a href="#">CONTACTO</a>
-  </div>
-  <div class="nav-right">NAVEGAÇÃO AVANÇADA · DESDE 1987</div>
+  <div class="logo"><span class="logo-icon">⚓</span>OceanVast</div>
+  <nav class="nav-links">
+    <a href="#" class="active">Frota</a>
+    <a href="#">Rotas</a>
+    <a href="#">Operações</a>
+    <a href="#">Contacto</a>
+  </nav>
+  <div class="nav-tagline">Navegação Avançada · Desde 1987</div>
 </div>
 
 <!-- STAGE -->
 <div id="stage">
+
+  <!-- 3D VIEW -->
   <div id="view">
     <canvas id="canvas"></canvas>
     <div id="load-overlay">
-      <div class="load-ship-name" id="load-name">—</div>
+      <div class="load-name" id="load-name">—</div>
       <div class="load-bar"><div class="load-fill" id="load-fill"></div></div>
       <div class="load-pct" id="load-pct">0%</div>
     </div>
     <div id="veil"></div>
     <div id="canvas-label">
-      <div class="canvas-num" id="canvas-num">NAVIO 01</div>
-      <div class="canvas-name" id="canvas-name">—</div>
+      <div class="cl-num"  id="cl-num">NAVIO 01</div>
+      <div class="cl-name" id="cl-name">—</div>
+    </div>
+    <div class="view-badge">Modelo 3D</div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div id="info">
+    <div id="info-inner">
+      <!-- populated by renderPanel() -->
+    </div>
+    <div id="info-cta-wrap">
+      <a class="cta" id="cta-link" href="#">
+        <span>Explorar Modelo 3D</span><span class="cta-arrow">→</span>
+      </a>
     </div>
   </div>
 
-  <div id="info">
-    <div id="info-inner"></div>
-  </div>
-</div>
+</div><!-- /stage -->
 
-<!-- CONTROLS -->
+<!-- CONTROLS BAR -->
 <div id="ctrl">
   <div class="ship-dots" id="ship-dots"></div>
   <div class="timer-wrap">
-    <span class="timer-label">PRÓXIMO</span>
+    <span class="timer-label">Próximo</span>
     <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
   </div>
-  <button class="play-btn" id="play-btn" onclick="togglePlay()">⏸ PAUSA</button>
-  <div class="ctrl-label" id="ctrl-label">FROTA · 3 NAVIOS</div>
+  <button class="play-btn" id="play-btn" onclick="togglePlay()">⏸ Pausa</button>
+  <div class="ctrl-label" id="ctrl-label">Frota</div>
 </div>
 
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
+  }
+}
+</script>
 <script type="module">
-import * as THREE from './three.module.js';
-import { OBJLoader } from './OBJLoader.module.js';
-import { MTLLoader } from './MTLLoader.module.js';
+import * as THREE    from 'three';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { GLTFLoader }  from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { Water }       from 'three/addons/objects/Water.js';
+import { Sky }         from 'three/addons/objects/Sky.js';
 
-// ── RENDERER (single, persistent) ────────────────────────────────
-const canvas = document.getElementById('canvas');
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
+/* ── RENDERER ───────────────────────────────────────────── */
+const canvas   = document.getElementById('canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
-renderer.setClearColor(0x03060c);
+renderer.toneMappingExposure = 0.9;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-// ── SCENE ────────────────────────────────────────────────────────
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x03060c, 0.003);
-const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 3000);
+/* ── SCENE ──────────────────────────────────────────────── */
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, 1, 0.5, 20000);
 
-scene.add(new THREE.AmbientLight(0x304060, 2));
-const sun = new THREE.DirectionalLight(0xfff4d6, 3.2);
-sun.position.set(80, 120, 60);
+/* ── SKY ─────────────────────────────────────────────────── */
+const sky = new Sky();
+sky.scale.setScalar(20000);
+scene.add(sky);
+const skyU = sky.material.uniforms;
+skyU['turbidity'].value        = 2;
+skyU['rayleigh'].value         = 1.0;
+skyU['mieCoefficient'].value   = 0.003;
+skyU['mieDirectionalG'].value  = 0.92;
+
+const sunPos = new THREE.Vector3();
+sunPos.setFromSphericalCoords(1,
+  THREE.MathUtils.degToRad(90 - 45),
+  THREE.MathUtils.degToRad(200)
+);
+skyU['sunPosition'].value.copy(sunPos);
+
+/* ── LIGHTS ─────────────────────────────────────────────── */
+const sun = new THREE.DirectionalLight(0xfff5e0, 4.0);
+sun.position.copy(sunPos).multiplyScalar(1000);
 sun.castShadow = true;
 sun.shadow.mapSize.set(1024, 1024);
-sun.shadow.camera.left = sun.shadow.camera.bottom = -180;
-sun.shadow.camera.right = sun.shadow.camera.top = 180;
+sun.shadow.camera.left = sun.shadow.camera.bottom = -200;
+sun.shadow.camera.right = sun.shadow.camera.top = 200;
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 2000;
 scene.add(sun);
-const fill = new THREE.DirectionalLight(0x2060a0, 1.0);
-fill.position.set(-80, 30, -60);
+const fill = new THREE.DirectionalLight(0xaad4ff, 1.8);
+fill.position.set(-200, 150, -200);
 scene.add(fill);
-const rim = new THREE.DirectionalLight(0x00d4ff, 0.4);
-rim.position.set(0, -20, -120);
-scene.add(rim);
+const underFill = new THREE.DirectionalLight(0x8ab8e8, 1.2);
+underFill.position.set(0, -100, 0);
+scene.add(underFill);
+scene.add(new THREE.AmbientLight(0xd0e8ff, 2.5));
 
-// Water
-const waterGeo = new THREE.PlaneGeometry(900, 900, 32, 32);
-const water = new THREE.Mesh(waterGeo, new THREE.MeshStandardMaterial({
-  color: 0x053050, roughness: 0.25, metalness: 0.45, transparent: true, opacity: 0.88
-}));
+/* ── WATER ──────────────────────────────────────────────── */
+const waterNormals = new THREE.TextureLoader().load(
+  'https://threejs.org/examples/textures/waternormals.jpg',
+  t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; }
+);
+const water = new Water(new THREE.PlaneGeometry(20000, 20000), {
+  textureWidth: 512, textureHeight: 512,
+  waterNormals,
+  sunDirection: sunPos.clone().normalize(),
+  sunColor:        0xffffff,
+  waterColor:      0x0033aa,
+  distortionScale: 4.0,
+  fog:             false,
+  alpha:           1.0,
+});
 water.rotation.x = -Math.PI / 2;
 scene.add(water);
 
 const shipGroup = new THREE.Group();
 scene.add(shipGroup);
 
-// ── RESIZE ───────────────────────────────────────────────────────
+/* ── BUOYANCY ───────────────────────────────────────────── */
+function waveHeight(x, z, t) {
+  const s1 = Math.sin(x * 0.04 + t * 0.8) * Math.cos(z * 0.03 + t * 0.6);
+  const s2 = Math.sin(x * 0.025 - t * 0.5) * Math.cos(z * 0.05 + t * 0.7);
+  return (s1 + s2) * 1.4;
+}
+let floatObj = null;
+let floatBaseY = 0;
+let waveTime = 0;
+const shipRot = { rx: 0, rz: 0 };
+
+/* ── RESIZE ─────────────────────────────────────────────── */
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w || !h) return;
@@ -392,32 +542,47 @@ function resize() {
   renderer.setSize(w, h, false);
 }
 window.addEventListener('resize', resize);
+if (window.ResizeObserver) {
+  new ResizeObserver(resize).observe(canvas.parentElement);
+}
 
-// ── RENDER LOOP ──────────────────────────────────────────────────
-let wt = 0;
+/* ── RENDER LOOP ────────────────────────────────────────── */
+const clock = new THREE.Clock();
 (function loop() {
   requestAnimationFrame(loop);
-  wt += 0.0008;
-  const pos = waterGeo.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    pos.setY(i,
-      Math.sin(pos.getX(i) * 0.042 + wt * 2.2) * 0.5 +
-      Math.sin(pos.getZ(i) * 0.058 + wt * 1.6) * 0.32
-    );
+  const dt = clock.getDelta();
+  waveTime += dt;
+  water.material.uniforms['time'].value += dt * 0.5;
+
+  // Ship buoyancy
+  if (floatObj) {
+    const sx = floatObj.position.x, sz = floatObj.position.z;
+    const d = 30;
+    const hC = waveHeight(sx, sz, waveTime);
+    const hF = waveHeight(sx, sz - d, waveTime);
+    const hB = waveHeight(sx, sz + d, waveTime);
+    const hL = waveHeight(sx - d, sz, waveTime);
+    const hR = waveHeight(sx + d, sz, waveTime);
+    floatObj.position.y += (floatBaseY + hC - floatObj.position.y) * Math.min(dt * 4, 1);
+    const trx = Math.atan2(hB - hF, d * 2) * 0.35;
+    const trz = Math.atan2(hL - hR, d * 2) * 0.35;
+    shipRot.rx += (trx - shipRot.rx) * Math.min(dt * 3, 1);
+    shipRot.rz += (trz - shipRot.rz) * Math.min(dt * 3, 1);
+    floatObj.rotation.x = shipRot.rx;
+    floatObj.rotation.z = shipRot.rz;
   }
-  pos.needsUpdate = true;
-  waterGeo.computeVertexNormals();
+
   shipGroup.rotation.y += 0.0009;
   renderer.render(scene, camera);
 })();
 
-// ── SLIDESHOW ────────────────────────────────────────────────────
+/* ── SLIDESHOW STATE ────────────────────────────────────── */
 let ships = [], current = 0, playing = true, slideTimer = null;
 const SLIDE_MS = 20000;
 
 async function init() {
   ships = await fetch('/api/ships').then(r => r.json());
-  document.getElementById('ctrl-label').textContent = `FROTA · ${ships.length} NAVIOS`;
+  document.getElementById('ctrl-label').textContent = `Frota · ${ships.length} Navios`;
   buildDots();
   resize();
   goTo(0);
@@ -428,7 +593,9 @@ function buildDots() {
   el.innerHTML = '';
   ships.forEach((s, i) => {
     const b = document.createElement('button');
-    b.className = 'ship-dot'; b.textContent = String(i+1).padStart(2,'0'); b.title = s.name;
+    b.className = 'ship-dot';
+    b.textContent = s.name;
+    b.title = s.subtitle || s.name;
     b.addEventListener('click', () => goTo(i));
     el.appendChild(b);
   });
@@ -451,8 +618,13 @@ function resetTimer() {
 
 window.togglePlay = () => {
   playing = !playing;
-  document.getElementById('play-btn').textContent = playing ? '⏸ PAUSA' : '▶ PLAY';
-  playing ? resetTimer() : (clearTimeout(slideTimer), document.getElementById('timer-fill').classList.remove('running'));
+  document.getElementById('play-btn').textContent = playing ? '⏸ Pausa' : '▶ Play';
+  if (playing) {
+    resetTimer();
+  } else {
+    clearTimeout(slideTimer);
+    document.getElementById('timer-fill').classList.remove('running');
+  }
 };
 
 function goTo(idx) {
@@ -460,60 +632,79 @@ function goTo(idx) {
   setActiveDot(idx);
   const ship = ships[idx];
 
-  document.getElementById('canvas-num').textContent = `NAVIO ${String(idx+1).padStart(2,'0')} / ${String(ships.length).padStart(2,'0')}`;
-  document.getElementById('canvas-name').textContent = ship.name.toUpperCase();
+  document.getElementById('cl-num').textContent  = `NAVIO ${String(idx+1).padStart(2,'0')} / ${String(ships.length).padStart(2,'0')}`;
+  document.getElementById('cl-name').textContent = ship.name.toUpperCase();
 
+  // Animate panel content swap
   const inner = document.getElementById('info-inner');
   inner.classList.add('exit');
   setTimeout(() => {
     renderPanel(ship, idx);
+    inner.scrollTop = 0;          // reset scroll on new ship
     inner.classList.remove('exit');
     inner.classList.add('enter');
     requestAnimationFrame(() => inner.classList.remove('enter'));
-  }, 300);
+  }, 260);
 
-  const veil = document.getElementById('veil');
-  veil.classList.add('show');
-  setTimeout(() => { loadShip(ship); veil.classList.remove('show'); }, 350);
+  // Update CTA link
+  document.getElementById('cta-link').href = `viewer.html?ship=${ship._folder}`;
+
+  // Transition 3D
+  document.getElementById('veil').classList.add('show');
+  setTimeout(() => { loadShip(ship); document.getElementById('veil').classList.remove('show'); }, 300);
 
   resetTimer();
 }
 
+/* ── RENDER INFO PANEL ──────────────────────────────────── */
 function renderPanel(ship, idx) {
-  const specs = Object.entries(ship.specs || {}).slice(0, 6);
-  const specsHtml = specs.map(([k,v]) =>
-    `<div class="spec-cell"><div class="spec-k">${k.toUpperCase()}</div><div class="spec-v">${v}</div></div>`
+  // All specs (not sliced — show all)
+  const specs = Object.entries(ship.specs || {});
+  const specsHtml = specs.map(([k, v]) =>
+    `<div class="spec-cell"><div class="spec-k">${k}</div><div class="spec-v">${v}</div></div>`
   ).join('');
+
   document.getElementById('info-inner').innerHTML = `
     <div class="info-idx">
       <span>${String(idx+1).padStart(2,'0')} / ${String(ships.length).padStart(2,'0')}</span>
       <div class="info-idx-line"></div>
-      <span>${ship.flag||'PT'} · IMO ${ship.imo||'—'}</span>
+      <span>IMO ${ship.imo || '—'}</span>
     </div>
+
     <div class="info-name">${ship.name}</div>
-    <div class="info-sub">${ship.subtitle||''}</div>
+    <div class="info-sub">${ship.subtitle || ''}</div>
+
+    <div class="info-meta">
+      <span class="meta-tag">🏳️ ${ship.flag || 'PT'}</span>
+      <span class="meta-tag">⚓ IMO ${ship.imo || '—'}</span>
+    </div>
+
     <div class="divider"></div>
-    <div class="info-desc">${ship.description||''}</div>
+
+    <div class="info-desc">${ship.description || ''}</div>
+
     <div class="specs-grid">${specsHtml}</div>
+
     <div class="status-row">
       <div class="status-dot"></div>
-      <div class="status-txt">${ship.status||'EM SERVIÇO'}</div>
+      <div class="status-txt">${ship.status || 'Em Serviço'}</div>
     </div>
-    <a class="cta" href="viewer.html?ship=${ship._folder}">
-      <span>EXPLORAR MODELO 3D</span><span class="cta-arrow">→</span>
-    </a>`;
+
+    <div style="height:4px"></div>`;
+    /* CTA is outside the scrollable area — always visible */
 }
 
-// ── LOAD SHIP ────────────────────────────────────────────────────
+/* ── LOAD 3D MODEL ──────────────────────────────────────── */
 let loadGen = 0;
 
 function setProg(p) {
   document.getElementById('load-fill').style.width = p + '%';
-  document.getElementById('load-pct').textContent = Math.round(p) + '%';
+  document.getElementById('load-pct').textContent  = Math.round(p) + '%';
 }
 
 function loadShip(ship) {
   const gen = ++loadGen;
+
   while (shipGroup.children.length) {
     const c = shipGroup.children[0];
     c.traverse(x => { if (x.isMesh) x.geometry.dispose(); });
@@ -524,8 +715,8 @@ function loadShip(ship) {
   shipGroup.rotation.y = m.rotationOffset || 0;
 
   const radius = m.cameraRadius || 200;
-  const tgt = new THREE.Vector3(...(m.cameraTarget || [0, 20, 0]));
-  const pitch = m.cameraPitch || 0.28;
+  const tgt    = new THREE.Vector3(...(m.cameraTarget || [0, 20, 0]));
+  const pitch  = m.cameraPitch  || 0.28;
   camera.position.set(tgt.x, tgt.y + radius * Math.sin(pitch), tgt.z + radius * Math.cos(pitch));
   camera.lookAt(tgt);
   resize();
@@ -534,52 +725,100 @@ function loadShip(ship) {
   document.getElementById('load-overlay').classList.remove('fade');
   setProg(0);
 
-  const folder = ship._folder, objFile = m.obj || 'model.obj', mtlFile = m.mtl;
+  const folder  = ship._folder;
+  const objFile = m.obj || 'model.obj';
+  const mtlFile = m.mtl;
 
   function place(obj) {
     if (gen !== loadGen) return;
     obj.traverse(c => {
       if (!c.isMesh) return;
-      const ms = Array.isArray(c.material) ? c.material : [c.material];
-      ms.forEach(mat => { mat.transparent = false; mat.opacity = 1; mat.depthWrite = true; mat.needsUpdate = true; });
+      (Array.isArray(c.material) ? c.material : [c.material]).forEach(mat => {
+        mat.transparent = false; mat.opacity = 1; mat.depthWrite = true; mat.needsUpdate = true;
+      });
       c.castShadow = c.receiveShadow = true;
     });
     const box = new THREE.Box3().setFromObject(obj);
     const cen = box.getCenter(new THREE.Vector3());
-    obj.position.set(-cen.x, -box.min.y, -cen.z);
+    const yOffset = m.yOffset || 0;
+    obj.position.set(-cen.x, -box.min.y + yOffset, -cen.z);
     shipGroup.add(obj);
+    // Register for buoyancy
+    floatObj = obj;
+    floatBaseY = -box.min.y + yOffset;
+    shipRot.rx = 0; shipRot.rz = 0;
     setTimeout(() => document.getElementById('load-overlay').classList.add('fade'), 300);
   }
 
-  function fallback() {
-    if (gen !== loadGen) return;
-    const ol = new OBJLoader();
-    ol.setPath(`/${folder}/`);
-    ol.load(objFile, obj => {
-      if (gen !== loadGen) return;
-      const pal = [0xd0d8e0, 0x2a3a4a, 0x8090a0, 0xc03030, 0x505860, 0x203040];
-      let i = 0;
-      obj.traverse(c => { if (c.isMesh) c.material = new THREE.MeshStandardMaterial({ color: pal[i++%pal.length], roughness:.55, metalness:.3 }); });
-      place(obj);
-    }, xhr => { if (gen===loadGen && xhr.total) setProg(35 + (xhr.loaded/xhr.total)*60); });
+  async function streamFetch(url, onProg) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const total  = +res.headers.get('content-length') || 0;
+    const reader = res.body.getReader();
+    const chunks = []; let loaded = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value); loaded += value.length;
+      if (total && gen === loadGen) onProg(loaded / total);
+    }
+    const buf  = new ArrayBuffer(loaded);
+    const view = new Uint8Array(buf); let pos = 0;
+    for (const ch of chunks) { view.set(ch, pos); pos += ch.length; }
+    return buf;
   }
 
-  if (mtlFile) {
-    setProg(5);
-    const ml = new MTLLoader(); ml.setPath(`/${folder}/`);
-    ml.load(mtlFile, mats => {
+  async function doLoad() {
+    const pal = [0x8898a8, 0x1a3a5a, 0x507090, 0xa02828, 0x405060, 0x102030];
+    const glbFile = m.glb || m.gltf;
+
+    if (glbFile) {
+      setProg(5);
+      const buf = await streamFetch(`/${folder}/${glbFile}`, p => { if (gen === loadGen) setProg(5 + p * 75); });
       if (gen !== loadGen) return;
-      mats.preload(); setProg(30);
-      const ol = new OBJLoader(); ol.setMaterials(mats); ol.setPath(`/${folder}/`);
-      ol.load(objFile,
-        obj => { if (gen!==loadGen) return; setProg(98); place(obj); },
-        xhr => { if (gen===loadGen && xhr.total) setProg(30 + (xhr.loaded/xhr.total)*66); },
-        () => fallback()
-      );
-    }, null, () => fallback());
-  } else {
-    fallback();
+      setProg(82);
+      await new Promise(r => setTimeout(r, 20));
+      if (gen !== loadGen) return;
+      const gltf = await new Promise((res, rej) => gltfLoader.parse(buf, `/${folder}/`, res, rej));
+      if (gen !== loadGen) return;
+      gltf.scene.traverse(x => { if (x.isMesh) { x.castShadow = true; x.receiveShadow = true; } });
+      setProg(99); place(gltf.scene);
+    } else {
+      let mats = null;
+      if (mtlFile) {
+        try {
+          setProg(5);
+          const ml = new MTLLoader(); ml.setPath(`/${folder}/`);
+          mats = await new Promise((res, rej) => ml.load(mtlFile, res, null, rej));
+          if (gen !== loadGen) return;
+          mats.preload(); setProg(15);
+        } catch(e) { mats = null; setProg(15); }
+      } else { setProg(10); }
+
+      const buf = await streamFetch(`/${folder}/${objFile}`, p => { if (gen === loadGen) setProg(15 + p * 60); });
+      if (gen !== loadGen) return;
+      const objText = new TextDecoder().decode(buf);
+      setProg(78);
+      await new Promise(r => setTimeout(r, 20));
+      if (gen !== loadGen) return;
+
+      const ol = new OBJLoader();
+      if (mats) ol.setMaterials(mats);
+      const obj3d = ol.parse(objText);
+      if (gen !== loadGen) return;
+      if (!mats) {
+        let i = 0;
+        obj3d.traverse(x => { if (x.isMesh) x.material = new THREE.MeshStandardMaterial({ color: pal[i++ % pal.length], roughness: .5, metalness: .45 }); });
+      }
+      setProg(99); place(obj3d);
+    }
   }
+
+  doLoad().catch(err => {
+    if (gen !== loadGen) return;
+    console.error('Erro ao carregar:', err);
+    document.getElementById('load-pct').textContent = 'Erro ao carregar';
+  });
 }
 
 init();
